@@ -24,6 +24,11 @@
 
 #include "helper.h"
 #include <fstream>
+
+#ifdef __APPLE__
+	#include <unistd.h>
+#endif
+
 using namespace std;
 
 
