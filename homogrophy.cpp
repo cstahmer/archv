@@ -1,7 +1,30 @@
-/**
- * @file SURF_Homography
- * @brief SURF detector + descriptor + FLANN Matcher + FindHomography
- * @author A. Huaman
+/*
+ * ArchiveVision: Compter Vision Engine for Digital Archives
+ *
+ * file: homogrophy.cpp
+ *
+ * Contains a class/function that takes two images and SURF
+ * feature point extraction parameters and returns an image
+ * that draws feature point matches between image one and
+ * image two.
+ *
+ * Exmample: ./homography ./images/31642-10.jpg ./images/31710-30.jpg -minhessian 1000 -octaves 15 -octavelayers 10
+ *
+ *
+ * Copyright (C) 2012 Carl Stahmer (cstahmer@gmail.com)
+ * Early Modern Center, University of California, Santa Barbara
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Creative Commons licence, version 3.
+ *
+ * See http://creativecommons.org/licenses/by/3.0/legalcode for the
+ * complete licence.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
  */
 
 #include <stdio.h>
@@ -38,8 +61,8 @@ int main( int argc, char** argv )
 	bool runInBackground = RUN_IN_BACKGROUND;
 	bool writelog = WRITE_LOG;
 
-  if( argc != 3 )
-  { readme(); return -1; }
+
+
 
   Mat img_object = imread( argv[1], CV_LOAD_IMAGE_GRAYSCALE );
   Mat img_scene = imread( argv[2], CV_LOAD_IMAGE_GRAYSCALE );
@@ -50,9 +73,7 @@ int main( int argc, char** argv )
 	//---Initialize various objects and parameters with base values
 	int dictionarySize = 8000; // originally set to 1500
 	int retries = 1;
-	int flags = KMEANS_PP_CENTERS;
-	string trainingDirectory = TRAINING_DIR;
-	string dictionaryFileName = "dictionary";
+	int flags = KMEANS_PP_CENTERS;;
 
 
 	int intSurfMinHession = SURF_MIN_HESSIAN;
@@ -62,22 +83,10 @@ int main( int argc, char** argv )
 	string blnFeaturePointImagesOutDir = FEATURE_POINT_IMAGES_OUT_DIR;
 	int intTermCritMaxCount = TERM_CRIT_MAX_COUNT;
 	double dblTermCritEpsilon = TERM_CRIT_EPSILON;
-
-	double dblKeypointSizeFilter = KEYPOINT_SIZE_FILTER;
-	double dblKeypointResponseFilter = KEYPOINT_RESPONSE_FILTER;
-
+	string filename = "./homography.jpg";
 
   for (int i = 3; i < argc; i++) {
   	string arument = argv[i];
-      if (arument == "-d") {
-      	trainingDirectory = argv[i + 1];
-      }
-      if (arument == "-n") {
-      	dictionaryFileName = argv[i + 1];
-      }
-      if (arument == "-s") {
-      	dictionarySize = atoi(argv[i + 1]);
-      }
       if (arument == "-back") {
       	runInBackground = true;
       }
@@ -94,43 +103,16 @@ int main( int argc, char** argv )
       if (arument == "-octavelayers") {
       	intSurfOctaveLayers = atoi(argv[i + 1]);
       }
-      if (arument == "-images") {
-      	blnSaveFeaturePointImages = true;
+      if (arument == "-sfile") {
+      	filename = atoi(argv[i + 1]);
       }
-      if (arument == "-imageoutput") {
-      	blnFeaturePointImagesOutDir = argv[i + 1];
-      }
-
-      if (arument == "-tcmax") {
-      	intTermCritMaxCount = atoi(argv[i + 1]);
-      }
-
-      if (arument == "-tcepsilon") {
-      	dblTermCritEpsilon = atof(argv[i + 1]);
-      }
-
-      if (arument == "-sizefilter") {
-      	dblKeypointSizeFilter = atof(argv[i + 1]);
-      }
-
-      if (arument == "-responsefilter") {
-      	dblKeypointResponseFilter = atof(argv[i + 1]);
-      }
-
       if (arument == "-help") {
-          cout << "Usage is -d <dirctory of training files> -n <name of dictionary output file and structure name> -s <size of dictionary> -back [flag to run in backbround mode] -log [flag to run in log mode]"<<endl;
+          cout << "Usage is <image 1> <image2>" <<endl << "    -sfile <output filename>" <<endl <<"   -back <flag to run in background>" <<endl << "    -log <flag to run in log mode>" <<endl << "    -minhessian<[minimum pixil blur>" <<endl << "    -octave <the amount to reduce at each octave step>" <<endl << "    -octavelayers <how many layers to the octave pyramid>";
           exit(0);
       }
   }
 
-  event = "Starting makeDictionary execuatable.";
-  helper.logEvent(event, 2, runInBackground, writelog);
-  event = "Training Directory: " + trainingDirectory;
-  helper.logEvent(event, 2, runInBackground, writelog);
-  event = "Filename to use when saving dictionary: " + fullDictionaryFileName;
-  helper.logEvent(event, 2, runInBackground, writelog);
-  string strDictSize = static_cast<ostringstream*>( &(ostringstream() << (dictionarySize)) )->str();
-  event = "Size of dictionary: " + strDictSize;
+  event = "Starting homogrophy execuatable.";
   helper.logEvent(event, 2, runInBackground, writelog);
   string strMinHessian = static_cast<ostringstream*>( &(ostringstream() << (intSurfMinHession)) )->str();
   event = "SURF Min Hessian: " + strMinHessian;
@@ -146,7 +128,6 @@ int main( int argc, char** argv )
   //-- Step 1: Detect the keypoints using SURF Detector
   //int minHessian = 400;
 
-  TermCriteria tc(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, intTermCritMaxCount, dblTermCritEpsilon);
 
   //SurfFeatureDetector detector( minHessian );
   SurfFeatureDetector detector(intSurfMinHession, intSurfOctaves, intSurfOctaveLayers);
@@ -157,9 +138,9 @@ int main( int argc, char** argv )
   detector.detect( img_scene, keypoints_scene );
 
   //-- Step 2: Calculate descriptors (feature vectors)
-  //SurfDescriptorExtractor extractor;
-  Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("FlannBased");
-  Ptr<DescriptorExtractor> extractor = new SurfDescriptorExtractor();
+  SurfDescriptorExtractor extractor;
+  //Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("FlannBased");
+  //Ptr<SurfDescriptorExtractor extractor = new SurfDescriptorExtractor();
 
   Mat descriptors_object, descriptors_scene;
 
@@ -167,7 +148,7 @@ int main( int argc, char** argv )
   extractor.compute( img_scene, keypoints_scene, descriptors_scene );
 
   //-- Step 3: Matching descriptor vectors using FLANN matcher
-  //FlannBasedMatcher matcher;
+  FlannBasedMatcher matcher;
   std::vector< DMatch > matches;
   matcher.match( descriptors_object, descriptors_scene, matches );
 
@@ -195,12 +176,12 @@ int main( int argc, char** argv )
     }
   }
   
-  printf("-- Good Matches Found : %f \n", gmfound );
+  //printf("-- Good Matches Found : %f \n", gmfound );
 
   Mat img_matches;
   drawMatches( img_object, keypoints_object, img_scene, keypoints_scene,
                good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
-               vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+               vector<char>(), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
 
 
   //-- Localize the object from img_1 in img_2
@@ -232,7 +213,7 @@ int main( int argc, char** argv )
   line( img_matches, scene_corners[2] + offset, scene_corners[3] + offset, Scalar( 0, 255, 0), 4 );
   line( img_matches, scene_corners[3] + offset, scene_corners[0] + offset, Scalar( 0, 255, 0), 4 );
   
-  string filename = "/web/sites/beeb/finished-woodcut-images-res/homography.jpg";
+
 
   //--save detectyed images;
   if( !imwrite( filename, img_matches ) ) {
@@ -246,6 +227,7 @@ int main( int argc, char** argv )
   cout << event << endl;
   
 
+
   return 0;
 }
 
@@ -253,4 +235,4 @@ int main( int argc, char** argv )
  * @function readme
  */
 void readme()
-{ std::cout << " Usage: ./homography <img1> <img2>" << std::endl; }
+{ std::cout << "./homography -help" << std::endl; }
