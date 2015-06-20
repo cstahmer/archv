@@ -16,7 +16,13 @@
 using namespace cv;
 using namespace std;
 
-Helper helper;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::vector;
+using std::string;
+
+//Helper helper;
 
 void readme();
 
@@ -27,7 +33,11 @@ void readme();
 int main( int argc, char** argv )
 {
 
-  string event;
+	Helper helper;
+	string event;
+	bool runInBackground = RUN_IN_BACKGROUND;
+	bool writelog = WRITE_LOG;
+
   if( argc != 3 )
   { readme(); return -1; }
 
@@ -37,10 +47,109 @@ int main( int argc, char** argv )
   if( !img_object.data || !img_scene.data )
   { std::cout<< " --(!) Error reading images " << std::endl; return -1; }
 
-  //-- Step 1: Detect the keypoints using SURF Detector
-  int minHessian = 400;
+	//---Initialize various objects and parameters with base values
+	int dictionarySize = 8000; // originally set to 1500
+	int retries = 1;
+	int flags = KMEANS_PP_CENTERS;
+	string trainingDirectory = TRAINING_DIR;
+	string dictionaryFileName = "dictionary";
 
-  SurfFeatureDetector detector( minHessian );
+
+	int intSurfMinHession = SURF_MIN_HESSIAN;
+	int intSurfOctaves = SURF_OCTAVES;
+	int intSurfOctaveLayers = SURF_OCTAVE_LAYERS;
+	bool blnSaveFeaturePointImages = SAVE_FEATURE_POINT_IMAGES;
+	string blnFeaturePointImagesOutDir = FEATURE_POINT_IMAGES_OUT_DIR;
+	int intTermCritMaxCount = TERM_CRIT_MAX_COUNT;
+	double dblTermCritEpsilon = TERM_CRIT_EPSILON;
+
+	double dblKeypointSizeFilter = KEYPOINT_SIZE_FILTER;
+	double dblKeypointResponseFilter = KEYPOINT_RESPONSE_FILTER;
+
+
+  for (int i = 3; i < argc; i++) {
+  	string arument = argv[i];
+      if (arument == "-d") {
+      	trainingDirectory = argv[i + 1];
+      }
+      if (arument == "-n") {
+      	dictionaryFileName = argv[i + 1];
+      }
+      if (arument == "-s") {
+      	dictionarySize = atoi(argv[i + 1]);
+      }
+      if (arument == "-back") {
+      	runInBackground = true;
+      }
+      if (arument == "-log") {
+      	writelog = true;
+      }
+
+      if (arument == "-minhessian") {
+      	intSurfMinHession = atoi(argv[i + 1]);
+      }
+      if (arument == "-octaves") {
+      	intSurfOctaves = atoi(argv[i + 1]);
+      }
+      if (arument == "-octavelayers") {
+      	intSurfOctaveLayers = atoi(argv[i + 1]);
+      }
+      if (arument == "-images") {
+      	blnSaveFeaturePointImages = true;
+      }
+      if (arument == "-imageoutput") {
+      	blnFeaturePointImagesOutDir = argv[i + 1];
+      }
+
+      if (arument == "-tcmax") {
+      	intTermCritMaxCount = atoi(argv[i + 1]);
+      }
+
+      if (arument == "-tcepsilon") {
+      	dblTermCritEpsilon = atof(argv[i + 1]);
+      }
+
+      if (arument == "-sizefilter") {
+      	dblKeypointSizeFilter = atof(argv[i + 1]);
+      }
+
+      if (arument == "-responsefilter") {
+      	dblKeypointResponseFilter = atof(argv[i + 1]);
+      }
+
+      if (arument == "-help") {
+          cout << "Usage is -d <dirctory of training files> -n <name of dictionary output file and structure name> -s <size of dictionary> -back [flag to run in backbround mode] -log [flag to run in log mode]"<<endl;
+          exit(0);
+      }
+  }
+
+  event = "Starting makeDictionary execuatable.";
+  helper.logEvent(event, 2, runInBackground, writelog);
+  event = "Training Directory: " + trainingDirectory;
+  helper.logEvent(event, 2, runInBackground, writelog);
+  event = "Filename to use when saving dictionary: " + fullDictionaryFileName;
+  helper.logEvent(event, 2, runInBackground, writelog);
+  string strDictSize = static_cast<ostringstream*>( &(ostringstream() << (dictionarySize)) )->str();
+  event = "Size of dictionary: " + strDictSize;
+  helper.logEvent(event, 2, runInBackground, writelog);
+  string strMinHessian = static_cast<ostringstream*>( &(ostringstream() << (intSurfMinHession)) )->str();
+  event = "SURF Min Hessian: " + strMinHessian;
+  helper.logEvent(event, 2, runInBackground, writelog);
+  string strOctaves = static_cast<ostringstream*>( &(ostringstream() << (intSurfOctaves)) )->str();
+  event = "SURF Octaves: " + strOctaves;
+  helper.logEvent(event, 2, runInBackground, writelog);
+  string strOctaveLayers = static_cast<ostringstream*>( &(ostringstream() << (intSurfOctaveLayers)) )->str();
+  event = "SURF Octave Layers: " + strOctaveLayers;
+  helper.logEvent(event, 2, runInBackground, writelog);
+
+
+  //-- Step 1: Detect the keypoints using SURF Detector
+  //int minHessian = 400;
+
+  TermCriteria tc(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, intTermCritMaxCount, dblTermCritEpsilon);
+
+  //SurfFeatureDetector detector( minHessian );
+  SurfFeatureDetector detector(intSurfMinHession, intSurfOctaves, intSurfOctaveLayers);
 
   std::vector<KeyPoint> keypoints_object, keypoints_scene;
 
@@ -48,7 +157,9 @@ int main( int argc, char** argv )
   detector.detect( img_scene, keypoints_scene );
 
   //-- Step 2: Calculate descriptors (feature vectors)
-  SurfDescriptorExtractor extractor;
+  //SurfDescriptorExtractor extractor;
+  Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("FlannBased");
+  Ptr<DescriptorExtractor> extractor = new SurfDescriptorExtractor();
 
   Mat descriptors_object, descriptors_scene;
 
@@ -56,7 +167,7 @@ int main( int argc, char** argv )
   extractor.compute( img_scene, keypoints_scene, descriptors_scene );
 
   //-- Step 3: Matching descriptor vectors using FLANN matcher
-  FlannBasedMatcher matcher;
+  //FlannBasedMatcher matcher;
   std::vector< DMatch > matches;
   matcher.match( descriptors_object, descriptors_scene, matches );
 

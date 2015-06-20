@@ -29,7 +29,7 @@ using namespace cv;
 using namespace std;
 
 Mat src; Mat src_gray;
-int thresh = 100;
+int thresh = 150;
 int max_thresh = 255;
 RNG rng(12345);
 const int MAX_KERNEL_LENGTH = 31;
@@ -180,7 +180,8 @@ int main( int argc, char** argv ) {
 			/// Load source image and convert it to gray
 			src = imread( evalFileFullPath, 1 );
 			cvtColor( src, src, CV_BGR2GRAY );
-			blur( src, src, Size(5,5) );
+			//blur( src, src, Size(5,5) );
+			blur( src, src, Size(1,1) );
 			Mat src_contours;
 			Mat src_Threshold;
 			Mat src_Outline;
