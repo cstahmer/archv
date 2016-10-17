@@ -3,8 +3,15 @@
 
 ### ARCHIVE-VISION ###
 	
-Arch-v is a collection of computer vision programs written in C++ with functions from the OpenCV library to perform analysis on large sets of images. The primary function is to locate recurring patterns within the images. Given a seed image the code base can locate similar features from that image within the rest of the set and output the images with the most similarity. There are four distinct programs however their uses are all related. The first program, processImages.cpp, is used to generate text files containing the keypoints and their mathematical descriptors. With these keypoints, analysis can be done to compare images and find matches. The second program, scanDatabase.cpp, is used to find the images that are most similar to a seed image provided by the user. The remaining program is best used when the best matches have already been found. Lastly, drawMatches.cpp compares two images, finds their matches based on homography and then draws the keypoints and their relative match.
+Arch-v is a collection of computer vision programs written in C++ with functions from the OpenCV library to perform analysis on large sets of images. The primary function is to locate recurring patterns within the images. Given a seed image the code base can locate similar features from that image within the rest of the set and output the images with the most similarity. The first program, processImages.cpp, is used to generate text files containing the keypoints and their mathematical descriptors. With these keypoints, analysis can be done to compare images and find matches. The second program, scanDatabase.cpp, is used to find the images that are most similar to a seed image provided by the user. The remaining program is best used when the best matches have already been found. Lastly, drawMatches.cpp compares two images, finds their matches based on homography and then draws the keypoints and their relative match.
 
+This app is best used for finding similar images to a seed image. The general method is therefore to first process the data set that you will compare your image to. Then run scanDatabase to compare your seed image with the dataset to find the best matches. Finally, it can be useful to see the matching parts between your seed image and the best match. To do so, run drawMatches.
+
+The method:
+
+* processImages
+* scanDatabase
+* drawMatches
 
 
 ### SETTING IT UP###
@@ -35,7 +42,7 @@ Provided is a simplified version of the process for building OpenCV on Unix base
 Once OpenCV is installed and the libraries are included, go to the ArchV directory and run make all. You should be left with a .exe version of each program; processImages.exe, scanDatabase.exe, and drawMatches.exe.
 
 
-### processImages ###
+### PROCESS IMAGES ###
 
 processImages when executed reads in a parameter file (for SURF), an input directory that contains the images to be processed, and an output directory to put the YAML files containing the discovered keypoints and their descriptors. 
 
@@ -55,7 +62,7 @@ Within each file there are all the keypoints and descriptors. The first part of 
 After this step has been completed, you can run the second program to find matches for your seed image within the image set.
 
 
-### Who do I talk to? ###
+### SCAN DATABASE ###
 
 * Repo owner or admin
 * Other community or team contact
