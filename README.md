@@ -1,6 +1,5 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
 
 ### ARCHIVE-VISION ###
 	
@@ -11,6 +10,7 @@ Arch-v is a collection of computer vision programs written in C++ with functions
 ### SETTING IT UP###
 
 In order to compile and run this project you will need to install the OpenCV library.  
+
 ***Installing OpenCV
 ***
 
