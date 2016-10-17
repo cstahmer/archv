@@ -14,6 +14,10 @@ The method:
 * drawMatches
 
 
+
+
+
+
 ### SETTING IT UP###
 
 In order to compile and run this project you will need to install the OpenCV library.  
@@ -30,6 +34,7 @@ These are a couple useful links for installing OpenCV –
 * https://help.ubuntu.com/community/OpenCV
 
 Provided is a simplified version of the process for building OpenCV on Unix based systems – 
+
 * Download all dependencies required for OpenCV 
 * Download the zipped OpenCV file from their website
 * Unzip OpenCV
@@ -40,6 +45,11 @@ Provided is a simplified version of the process for building OpenCV on Unix base
 ***Compiling Arch-v***
 
 Once OpenCV is installed and the libraries are included, go to the ArchV directory and run make all. You should be left with a .exe version of each program; processImages.exe, scanDatabase.exe, and drawMatches.exe.
+
+
+
+
+
 
 
 ### PROCESS IMAGES ###
