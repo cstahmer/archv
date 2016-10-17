@@ -26,18 +26,18 @@ For OpenCV you need several dependencies; gcc, g++, cmake and several video and 
 
 These are a couple useful links for installing OpenCV –
 
-http://docs.opencv.org/doc/tutorials/introduction/table_of_content_introduction/table_of_content_introduction.html
-https://help.ubuntu.com/community/OpenCV
+* http://docs.opencv.org/doc/tutorials/introduction/table_of_content_introduction/table_of_content_introduction.html
+* https://help.ubuntu.com/community/OpenCV
 
 Provided is a simplified version of the process for building OpenCV on Unix based systems –
-	Download all dependencies required for OpenCV
-	Download the zipped OpenCV file from their website
-	Unzip OpenCV
-	Go to directory and build using cmake
-	Set up user system to correctly link to OpenCV library
-	Check that library is linked correctly by testing some of the OpenCV sample programs
+* Download all dependencies required for OpenCV
+* Download the zipped OpenCV file from their website
+* Unzip OpenCV
+* Go to directory and build using cmake
+* Set up user system to correctly link to OpenCV library
+* Check that library is linked correctly by testing some of the OpenCV sample programs
 
-***Compiling the code***
+***Compiling arch-v***
 
 Once OpenCV is installed and the libraries are included, go to the ArchV directory and run make all. You should be left with a .exe version of each program; processImages.exe, scanDatabase.exe, and drawMatches.exe.
 
