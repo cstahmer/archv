@@ -14,7 +14,9 @@ In order to compile the source code, you will need several programs. The install
 
 ***Installing OpenCV
 ***
+
 These are a couple useful links for installing OpenCV –
+
 http://docs.opencv.org/doc/tutorials/introduction/table_of_content_introduction/table_of_content_introduction.html
 https://help.ubuntu.com/community/OpenCV
 
