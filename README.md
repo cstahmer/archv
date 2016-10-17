@@ -12,7 +12,8 @@ Arch-v is a collection of computer vision programs written in C++ with functions
 
 In order to compile the source code, you will need several programs. The installation of OpenCV will require all you need for ArchV.  For OpenCV you need gcc, g++, cmake and several video and image libraries specified on their site.
 
-*Installing OpenCV*
+***Installing OpenCV
+***
 These are a couple useful links for installing OpenCV –
 http://docs.opencv.org/doc/tutorials/introduction/table_of_content_introduction/table_of_content_introduction.html
 https://help.ubuntu.com/community/OpenCV
@@ -26,6 +27,7 @@ Provided is a simplified version of the process for building OpenCV on Unix base
 	Check that library is linked correctly by testing some of the OpenCV sample programs
 
 ***Compiling the code***
+
 Once OpenCV is installed and the libraries are included, go to the ArchV directory and run make all. You should be left with a .exe version of each of the four programs, process.exe, homography.exe, match.exe, and detect.exe. 
 
 
