@@ -57,7 +57,6 @@ processImages when executed reads in a parameter file (for SURF), an input direc
 ./process.exe -i <input directory> -o <output directory> -p <path to parameter file>
 
 When executes it should immediately start processing the files one by one and outputting the information to the terminal. This is the most computationally intensive part of Arch-v and should take several minutes to complete. For each image that was found in the directory it will output the number of keypoints found and then the remaining keypoints after they have been filtered. It will also output the image number it is on for every hundred images it processes, i.e. image 0, 100, 200 … to the last one.
-![run.png](https://bitbucket.org/repo/7RRn64/images/2882487937-run.png)
 ![runprocess.png](https://bitbucket.org/repo/7RRn64/images/1614076537-runprocess.png)
 
 When done, you should see within the output directory a unique.yml file for each image that was in the input directory.
@@ -65,7 +64,6 @@ When done, you should see within the output directory a unique.yml file for each
 ![outputprocess.png](https://bitbucket.org/repo/7RRn64/images/562201705-outputprocess.png)
 
 Within each file there are all the keypoints and descriptors. The first part of the file is the keypoints, and then after that matrix there is a matrix of all of the descriptors for those keypoints. These files will then be read in for the homography matching part of ArchV. The files should look like this if any keypoints were found.
-![ymlcropped.png](https://bitbucket.org/repo/7RRn64/images/1008876333-ymlcropped.png)
 ![ymlcontents.png](https://bitbucket.org/repo/7RRn64/images/3957141334-ymlcontents.png)
 
 After this step has been completed, you can run the second program to find matches for your seed image within the image set.
@@ -79,13 +77,11 @@ ScanDatabase takes in a seed image, the directory of keypoints, the parameter fi
 
 ./ScanImageDatabase.exe -i <path to seed image> -d <path to image directory> -k <path to keypoint directory> -o <path to output image file (ending with .jpg!)> -p <path to SURF parameter file> 
 
-![runcropped.jpg.png](https://bitbucket.org/repo/7RRn64/images/2409117055-runcropped.jpg.png)
 ![runscanDB.png](https://bitbucket.org/repo/7RRn64/images/3847713031-runscanDB.png)
 
 When the program is finished it will have saved the results in the specified output file. The output file should look something like this:
-![output.jpg](https://bitbucket.org/repo/7RRn64/images/1021469834-output.jpg)
 ![output.jpg](https://bitbucket.org/repo/7RRn64/images/4210851335-output.jpg)
-
+The seed image is in the top left, the best match in the top right, then second best match bottom left and so on. The filename and distance are included on top of each subsection. The distance refers to the remaining number of matches.
 
 ### PARAMETER FILE ###
 The parameter file should be a simple text file formatted in this way:
@@ -96,6 +92,7 @@ min Size: <value>
 min Response: <value>
 
 example:
+
 ![param.png](https://bitbucket.org/repo/7RRn64/images/2572617515-param.png)
 
 ### CONTACT ###
