@@ -80,6 +80,7 @@ ScanDatabase takes in a seed image, the directory of keypoints, the parameter fi
 
 When the program is finished it will have saved the results in the specified output file. The output file should look something like this:
 ![output.jpg](https://bitbucket.org/repo/7RRn64/images/1021469834-output.jpg)
+
 (in this case there was only one good match to the seed image.
 
 
