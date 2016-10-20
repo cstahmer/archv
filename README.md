@@ -60,7 +60,6 @@ When executes it should immediately start processing the files one by one and ou
 ![runprocess.png](https://bitbucket.org/repo/7RRn64/images/1614076537-runprocess.png)
 
 When done, you should see within the output directory a unique.yml file for each image that was in the input directory.
-![filescropped.png](https://bitbucket.org/repo/7RRn64/images/422956241-filescropped.png)
 ![outputprocess.png](https://bitbucket.org/repo/7RRn64/images/562201705-outputprocess.png)
 
 Within each file there are all the keypoints and descriptors. The first part of the file is the keypoints, and then after that matrix there is a matrix of all of the descriptors for those keypoints. These files will then be read in for the homography matching part of ArchV. The files should look like this if any keypoints were found.
