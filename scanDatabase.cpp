@@ -69,7 +69,7 @@ int main(int argc, char** argv)
   int layers = 8;
   int sizemin = 50;
   double responsemin = 100;
-  double scale = 0.3;
+  double scale = 1;
   double ratio = 0.8;
 
   read_flags (argc, argv, &imgfile, &imgdir, &infodir, &output, &param);
