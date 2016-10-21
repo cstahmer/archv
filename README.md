@@ -24,12 +24,12 @@ In order to compile and run this project you will need to install the OpenCV lib
 For OpenCV you need several dependencies; gcc, g++, cmake and several video and image libraries specified on their site.
 
 
-These are a couple useful links for installing OpenCV â€“
+These are a couple useful links for installing OpenCV –
 
 * http://docs.opencv.org/doc/tutorials/introduction/table_of_content_introduction/table_of_content_introduction.html
 * https://help.ubuntu.com/community/OpenCV
 
-Provided is a simplified version of the process for building OpenCV on Unix based systems â€“ 
+Provided is a simplified version of the process for building OpenCV on Unix based systems – 
 
 * Download all dependencies required for OpenCV 
 * Download the zipped OpenCV file from their website
@@ -56,7 +56,7 @@ processImages when executed reads in a parameter file (for SURF), an input direc
 
 ./process.exe -i <input directory> -o <output directory> -p <path to parameter file>
 
-When executes it should immediately start processing the files one by one and outputting the information to the terminal. This is the most computationally intensive part of Arch-v and should take several minutes to complete. For each image that was found in the directory it will output the number of keypoints found and then the remaining keypoints after they have been filtered. It will also output the image number it is on for every hundred images it processes, i.e. image 0, 100, 200 â€¦ to the last one.
+When executes it should immediately start processing the files one by one and outputting the information to the terminal. This is the most computationally intensive part of Arch-v and should take several minutes to complete. For each image that was found in the directory it will output the number of keypoints found and then the remaining keypoints after they have been filtered. It will also output the image number it is on for every hundred images it processes, i.e. image 0, 100, 200 … to the last one.
 ![runprocess.png](https://bitbucket.org/repo/7RRn64/images/1614076537-runprocess.png)
 
 When done, you should see within the output directory a unique.yml file for each image that was in the input directory.
@@ -85,7 +85,7 @@ The seed image is in the top left, the best match in the top right, then second 
 The output.txt file should look like this:
 ![output.txt.png](https://bitbucket.org/repo/7RRn64/images/2210241640-output.txt.png)
 
-Each image in the image set has a value next to it, that value is the number of remaining matches after the homography filter.
+Each image in the image set has a value next to it, that value is the number of remaining matches after the homography filter. Notice that there are more than three images that have matches. There can be more matches than three, the output.jpg is simply a preview of the best 3 matches, not all possible matches.
  
 ### DRAW MATCHES ###
 
