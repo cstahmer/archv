@@ -70,7 +70,7 @@ After this step has been completed, you can run the second program to find match
 
 ### SCAN DATABASE ###
 
-ScanDatabase takes in a seed image, the directory of keypoints, the parameter file that generated those keypoints, and the path to an output image file that will contain the best matching images. This program reads in your seed image, extracts keypoints, generates descriptors for these keypoints and compares those descriptors with the descriptors of the images from the database. Each comparison (image vs database image) is done using a robust filter, that checks for sensitivity, symmetry, as well as geometric proximity of the matches. Images are then ranked based on the number of matches they have with the input image. The top three hits are then displayed with the number of matches they contained.
+ScanDatabase takes in a seed image, the directory of keypoints, the parameter file that generated those keypoints, and the path to an output image file that will contain the best matching images. This program reads in your seed image, extracts keypoints, generates descriptors for these keypoints and compares those descriptors with the descriptors of the images from the database. Each comparison (image vs database image) is done using a robust filter, that checks for sensitivity, symmetry, as well as geometric proximity of the matches. Images are then ranked based on the number of matches they have with the input image. The top three hits are then displayed with the number of matches they contained.There will be two output files: output.jpg and output.txt.
 
 ***Using scanDatabase***
 
@@ -78,9 +78,27 @@ ScanDatabase takes in a seed image, the directory of keypoints, the parameter fi
 
 ![runscanDB.png](https://bitbucket.org/repo/7RRn64/images/3847713031-runscanDB.png)
 
-When the program is finished it will have saved the results in the specified output file. The output file should look something like this:
+When the program is finished it will have saved the results in the specified output image file (<output>.jpg) and text file (<output.txt>). The output.jpg file should look something like this:
 ![output.jpg](https://bitbucket.org/repo/7RRn64/images/4210851335-output.jpg)
 The seed image is in the top left, the best match in the top right, then second best match bottom left and so on. The filename and distance are included on top of each subsection. The distance refers to the remaining number of matches.
+
+The output.txt file should look like this:
+![output.txt.png](https://bitbucket.org/repo/7RRn64/images/2210241640-output.txt.png)
+
+Each image in the image set has a value next to it, that value is the number of remaining matches after the homography filter.
+ 
+### DRAW MATCHES ###
+
+drawMatches takes as input two images, the path to an output image file as well as the path to the parameter file. It is best to use similar parameters to what was used in the first two steps to find these two images that are known to be similar. The code is also self contained so you can input any two images and any SURF parameter files to find the keypoints that match and have passed the robust homography filter.
+
+***Using drawMatches***
+
+./drawMatches.exe -i1 <path to seed image> -i2 <path to image to compare with> -o <path to output image file (ending with .jpg!)> -p <path to SURF parameter file> 
+![runmatch.png](https://bitbucket.org/repo/7RRn64/images/2110534124-runmatch.png)
+
+When finished you should have an output image file like this:
+![match.jpg](https://bitbucket.org/repo/7RRn64/images/4033922299-match.jpg)
+The red circles are the keypoints with radius equal to their size, the blue lines draw the matching keypoint on the other image.
 
 ### PARAMETER FILE ###
 The parameter file should be a simple text file formatted in this way:
