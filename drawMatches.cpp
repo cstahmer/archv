@@ -104,11 +104,15 @@ int main(int argc, char** argv)
   detector.detect( img1, keypoints1 );
   detector.detect( img2, keypoints2 );
 
+
+  int nk1, nk2;
+  nk1 = keypoints1.size();
+  nk2 = keypoints2.size();
   filter_keypoints (keypoints1, sizemin, responsemin);
   filter_keypoints (keypoints2, sizemin, responsemin);
 
-  cout << "Number of keypoints 1 : " << keypoints1.size() << endl;
-  cout << "Number of keypoints 2 : " << keypoints2.size() <<endl;
+  cout << "Number of keypoints 1 : " << nk1 << " After filter : " << keypoints1.size() << endl;
+  cout << "Number of keypoints 2 : " << nk2 << " After filter : " << keypoints2.size() <<endl;
 
 /* ===============================================================================================
    Generate descriptors from key points
