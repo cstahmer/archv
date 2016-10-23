@@ -173,6 +173,7 @@ int main(int argc, char** argv)
   Mat img_matches;
   img_matches = DrawMatch (imgkpts1, keypoints1, imgkpts2, keypoints2, matches);
 
+
 /* ===============================================================================================
    Rescale matched image
    =============================================================================================== */
@@ -315,28 +316,6 @@ void filter_keypoints (vector <KeyPoint> &keypoints, int sizemin, double respons
 }
 
 
-
-/* ===============================================================================================
-   Procedure to draw positions of key points on image using circles
-   =============================================================================================== */
-void show_keypoints (vector<KeyPoint>& keypoints, Mat& drawImg)
-{
-	int thickness = 2;
-	int lineType = 8;
-	int shift = 0;
-	int radius;
-
-	int npoints=keypoints.size();
-
- 	for(int i = 0; i < npoints; i++)
-	{
-		radius=keypoints[i].size/5;
-		circle(drawImg,keypoints[i].pt,radius,Scalar(0,0,255),thickness,lineType,shift);
-	}
-}
-
-
-
 /* ===============================================================================================
    This function combines multiple images into a single image
    =============================================================================================== */
@@ -393,8 +372,8 @@ Mat DrawMatch(Mat& image1, vector<KeyPoint>& keypoints1, Mat& image2, vector<Key
 /* ==================================================================================
 	Now add lines between keypoints
    ================================================================================== */
-	int thickness = 2; //from 4
-	int lineType = 8;
+	int thickness = 1; //from 4
+	int lineType = CV_AA; //from 8
 	int shift = 0;
 
 	for (int m = 0; m < matches1to2.size(); m++)
@@ -408,7 +387,7 @@ Mat DrawMatch(Mat& image1, vector<KeyPoint>& keypoints1, Mat& image2, vector<Key
 		Point2f pt2=keypoints2[i2].pt;
 		pt2.x += offset_x;
 
-		line(NewImage,pt1,pt2,Scalar( 255, 0, 0),thickness,lineType,shift);
+		line(NewImage,pt1,pt2,Scalar( 155, 0, 0),thickness,lineType,shift);
 	}
 
 /* ===============================================================================================
