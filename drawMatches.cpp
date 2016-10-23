@@ -163,10 +163,7 @@ int main(int argc, char** argv)
   img1.copyTo(imgkpts1);
   img2.copyTo(imgkpts2);
 
-  //call drawkeypoints from opencv
-  //show_keypoints (keypt1, imgkpts1); 
   drawKeypoints (img1, keypt1, imgkpts1, Scalar (0, 0, 155), 4);
-  //show_keypoints (keypt2, imgkpts2); 
   drawKeypoints (img2, keypt2, imgkpts2, Scalar (0, 0, 155), 4);
 
   Mat img_matches;
