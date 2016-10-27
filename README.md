@@ -98,6 +98,10 @@ drawMatches takes as input two images, the path to an output image file as well 
 
 When finished you should have an output image file like this:
 ![match.jpg](https://bitbucket.org/repo/7RRn64/images/4033922299-match.jpg)
+
+An output file with richer keypoint drawings will look like this:
+![keypoints.jpg](https://bitbucket.org/repo/7RRn64/images/2314584649-keypoints.jpg)
+
 The red circles are the keypoints with radius equal to their size, the blue lines draw the matching keypoint on the other image.
 
 ### PARAMETER FILE ###
