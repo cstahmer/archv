@@ -81,6 +81,8 @@ ScanDatabase takes in a seed image, the directory of keypoints, the parameter fi
 When the program is finished it will have saved the results in the specified output image file (<output>.jpg) and text file (<output.txt>). The output.jpg file should look something like this:
 ![output.jpg](https://bitbucket.org/repo/7RRn64/images/4210851335-output.jpg)
 The seed image is in the top left, the best match in the top right, then second best match bottom left and so on. The filename and distance are included on top of each subsection. The distance refers to the remaining number of matches.
+An output that extends how many images to display based on their ranking should look something like this:
+![Scan_image1.jpg](https://bitbucket.org/repo/7RRn64/images/2690046969-Scan_image1.jpg)
 
 The output.txt file should look like this:
 ![output.txt.png](https://bitbucket.org/repo/7RRn64/images/2210241640-output.txt.png)
