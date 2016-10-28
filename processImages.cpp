@@ -93,8 +93,8 @@ int main(int argc, char **argv)
    =============================================================================================== */
   for (int i = 0; i < files.size(); i++)
   {
-    if (i % 100 == 0  || i == files.size())
-      cout << "Processing image # " << setw(4) << i << " out of " << files.size() << " files" << endl;
+//    if (i % 100 == 0  || i == files.size())
+//      cout << "Processing image # " << setw(4) << i << " out of " << files.size() << " files" << endl;
 
     //read in image file and generate output file name
     name = path2dir + files[i];
@@ -118,6 +118,7 @@ int main(int argc, char **argv)
     fs.release();
   }
 
+  cout << "Processed all " << files.size() << " images, and placed the .yml files in " << path2outdir << endl;
   return 0;
 }  
 
