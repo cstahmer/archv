@@ -105,10 +105,7 @@ int main(int argc, char **argv)
 
     //SURF detection and then filter
     detector.detect (image, keypoints);
-    int number = keypoints.size();
     filter_keypoints (keypoints, sizemin, responsemin);
-    int number2 = keypoints.size();
-    cout << "Processing Image " << name << " Keypoints: " << number << " After filter: " << number2 << endl;
 
     //write into output file
     FileStorage fs (nameful, FileStorage::WRITE);
