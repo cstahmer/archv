@@ -284,20 +284,36 @@ int main(int argc, char** argv)
    Write out ordered list of images, with number of matches
    =============================================================================================== */
   string distfile=output;
+  string jsonfile = output;
   pos = 0;
   pos = distfile.find("jpg",pos);
+  jsonfile.replace(pos,3,"json");
   distfile.replace(pos,3,"txt");
   ofstream outfile(distfile.c_str());
   outfile << "Input Image: " << imgfile.substr(0,imgfile.find_last_of(".")) << endl ;
+  ofstream json(jsonfile.c_str());
   outfile << "\nImages scanned and number of significant matches: " << endl;
+  json << "{\"path\":\"" << imgdir << "\"";
+  json << ", \"files\":[";
+  int count = 0;
 
   for(int i=0; i < ndist; i++)
   {
 	  idx = indices[i];
 	  dist = distval[idx];
    	outfile << "Image: " << files[idx].substr(0,files[idx].find_last_of(".")) << " dist = " << dist << endl;
+    if (dist > 1)
+    {
+      if (count != 0)
+        json << ",";
+      json << "{\"name\":\"" <<files[idx].substr(0,files[idx].find_last_of(".")) << "\",";
+      json <<"\"distance\":" << dist << "}";
+      count++;
+    }
   }
   outfile.close();
+  json << "]}" << endl;
+  json.close();
 
 /* ===============================================================================================
    Save image of all the top matches into a window
