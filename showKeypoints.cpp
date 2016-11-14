@@ -14,6 +14,7 @@
  ============================================================================================ */
 
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
@@ -24,7 +25,8 @@ using namespace std;
 using namespace cv;
 
 int usage ();
-void read_instructions (int argc, char **argv, string *input, string *output, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
+void read_flags (int argc, char **argv, string *input, string *output, string *param);
+void read_surfparams (string param, int *min, int *octaves, int *layers, int *sizemin, double *responsemin);
 void filter_keypoints (vector <KeyPoint> &keypoints, int sizemin, double responsemin);
 
 int main(int argc, char **argv)
@@ -47,6 +49,7 @@ int main(int argc, char **argv)
   int sizemin = 50;
   double responsemin = 100;
   string input, output;
+  string param;
   vector <KeyPoint> keypoints;
   Mat image;
   Mat outimage; 
@@ -54,7 +57,8 @@ int main(int argc, char **argv)
 /* =====================================================================================
 	parse command line into variables above and read in the image into Mat image
    ===================================================================================== */
-  read_instructions(argc, argv, &input, &output, &minh, &octaves, &layers, &sizemin, &responsemin);
+  read_flags(argc, argv, &input, &output, &param);
+  read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
   image = imread (input);
 
 /* =====================================================================================
@@ -64,7 +68,6 @@ int main(int argc, char **argv)
   detector.detect (image, keypoints);
   int original = keypoints.size();
   filter_keypoints (keypoints, sizemin, responsemin);
-  cout << "Keypoints: " << original << " After filter: " << keypoints.size() << endl;
 
 /* =====================================================================================
 	call drawkeypoints from opencv and write to the output image
@@ -78,11 +81,11 @@ int main(int argc, char **argv)
 
 int usage ()
 {
-  cout << "./a.out -i input -o output -minh # -octaves # - layers # -sizemin # -responsemin #" << endl;
+  cout << "./a.out -i input -o output -p paramfilepath " << endl;
   return -1;
 }
 
-void read_instructions(int argc, char **argv, string *input, string *output, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin) 
+void read_flags(int argc, char **argv, string *input, string *output, string *param) 
 {
   string parser;
   for (int i = 0; i < argc; i++)
@@ -92,19 +95,58 @@ void read_instructions(int argc, char **argv, string *input, string *output, int
       *input = argv[i + 1];
     if (parser == "-o")
       *output = argv[i+1];
-    if (parser == "-minh")
-      *minh = atoi(argv[i+1]);
-    if (parser == "-octaves")
-      *octaves = atoi(argv[i+1]);
-    if (parser == "-layers")
-      *layers = atoi(argv[i+1]);
-    if (parser == "-sizemin")
-      *sizemin = atoi(argv[i+1]);
-    if (parser == "-responsemin")
-      *responsemin = atoi(argv[i+1]);
+    if (parser == "-p")
+      *param = argv[i+1];
   }
 }
-  
+ 
+
+/* ===============================================================================================
+   Procedure to read parameters for SURF from the parameter file
+   =============================================================================================== */
+void read_surfparams(string param, int *minHessian, int *octaves, int *octaveLayers, int *SizeMin, double *RespMin)
+{
+  ifstream inFile;
+  inFile.open(param.c_str());
+	string record;
+	stringstream ss;
+
+	while ( !inFile.eof () ) {    
+		getline(inFile,record);
+		if (record.find("minHessian") != std::string::npos) {
+			ss<<record.substr(record.find_last_of(":") + 1);
+			ss>> *minHessian;
+			ss.str("");
+			ss.clear();
+		}
+		if (record.find("octaves") != std::string::npos) {
+			ss<<record.substr(record.find_last_of(":") + 1);
+			ss>> *octaves;
+			ss.str("");
+			ss.clear();
+		}
+		if (record.find("octaveLayers") != std::string::npos) {
+			ss<<record.substr(record.find_last_of(":") + 1);
+			ss>> *octaveLayers;
+			ss.str("");
+			ss.clear();
+		}
+		if (record.find("min Size") != std::string::npos) {
+			ss<<record.substr(record.find_last_of(":") + 1);
+			ss>> *SizeMin;
+			ss.str("");
+			ss.clear();
+		}
+		if (record.find("min Resp") != std::string::npos) {
+			ss<<record.substr(record.find_last_of(":") + 1);
+			ss>> *RespMin;
+			ss.str("");
+			ss.clear();
+		}
+	}
+}
+
+
 /* ===============================================================================================
    Procedure to filter the keypoints from the keypoint vector by minimum size and response
    =============================================================================================== */
