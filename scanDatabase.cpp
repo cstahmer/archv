@@ -238,12 +238,12 @@ int main(int argc, char** argv)
    int nimgmax = 10;
 
    Mat image;
-   Mat drawImg[nimgmax];
-   Mat scaledImg[nimgmax];
+   Mat drawImg[10];
+   Mat scaledImg[10];
 
    string imfile;
-   string titles[nimgmax];
-   stringstream str[nimgmax];
+   string titles[10];
+   stringstream str[10];
 
    img1.copyTo(drawImg[0]);
    str[0] << "Input Image: " << imgfile.substr(0,imgfile.find_last_of(".")) ;
