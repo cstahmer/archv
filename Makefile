@@ -11,7 +11,7 @@ NAMEFUL3=$(DIR)/$(NAME3)$(EXT)
 NAMEFUL4=$(DIR)/$(NAME4)$(EXT)
 
 CC = g++
-CFLAGS = -c -O -std=c++11
+CFLAGS = -c -O
 LDFLAGS = -O 
 LIBS=-L/usr/local/lib
 LIBRARIES=-lopencv_core -lopencv_nonfree -lopencv_imgproc -lopencv_highgui -lopencv_features2d -lopencv_flann -lopencv_contrib -lopencv_ml -lopencv_objdetect -lopencv_video -lopencv_videostab -lopencv_calib3d -lopencv_ocl -lopencv_photo -lopencv_stitching
