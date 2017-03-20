@@ -135,8 +135,7 @@ While scanDatabase is running, it will print its progress for every hundred imag
 
 When the program finishes, it will have saved the output image and text file with the names that you had specified `<path to output files>`. The output image should look similar to the following image:
 
-[output.jpg]
-
+![output.jpg](https://bitbucket.org/repo/7RRn64/images/3554904158-output.jpg)
 The seed image is in the top left, the best match is immediately to the right (being the seed image itself), the second best is the first image in the second row, and so on. The filename and distance are included on top of each image. The distance refers to the remaining number of matches.
 
 The output text file should look similar to the following:
@@ -174,8 +173,7 @@ The following execution of drawMatches is between the seed image that we've been
 
 When the program finishes, it will have saved the output image and text file with the names that you had specified `<path to output image>`. The output image should look similar to the following image:
 
-[match.jpg]
-
+![match.jpg](https://bitbucket.org/repo/7RRn64/images/3795577038-match.jpg)
 The red circles are the keypoints with their radii equal their size and the blues lines connect the matching keypoints between the two images.
 
 ### PARAMETER FILE ###
