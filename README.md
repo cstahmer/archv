@@ -1,128 +1,195 @@
-# README #
+#### README ####
+
+## ARCHIVE-VISION ##
+
+Archive-Vision (archv or arch-v) is a collection of computer vision programs written in C++ which utilizes functions from the OpenCV library to perform analysis on large image sets. The primary function is to locate recurring patterns within each image in a set of images. *Arch-v* locates features from a given seed image within an imageset and outputs the image(s) with the most similarities. The first program, **processImages.cpp**, generates text files containing the keypoints and their mathmatical descriptors; with the keypoints, analysis can be done to compare images and find matches. The second program, **scanDatabase.cpp**, finds the images that are most similar to a given seed image. The third program, **drawMatches.cpp**, compares two images, locates their matches based on homography, then draws the keypoints and their relative match; this is most useful when the best matches have already been found.
 
 
-### ARCHIVE-VISION ###
+The best use for *arch-v* is to find images which are similar to a seed image. The standard **method** is to process the image set that you will compare your seed image to, scan through the generated dataset with a given seed image to find the best matches, then draw identifiers for matching features between the seed image and its best match.
 
-Arch-v is a collection of computer vision programs written in C++ with functions from the OpenCV library to perform analysis on large sets of images. The primary function is to locate recurring patterns within the images. Given a seed image the code base can locate similar features from that image within the rest of the set and output the images with the most similarity. The first program, processImages.cpp, is used to generate text files containing the keypoints and their mathematical descriptors. With these keypoints, analysis can be done to compare images and find matches. The second program, scanDatabase.cpp, is used to find the images that are most similar to a seed image provided by the user. The remaining program is best used when the best matches have already been found. Lastly, drawMatches.cpp compares two images, finds their matches based on homography and then draws the keypoints and their relative match.
+Therefore, the **method** is as follows:
 
-This app is best used for finding similar images to a seed image. The general method is therefore to first process the data set that you will compare your image to. Then run scanDatabase to compare your seed image with the dataset to find the best matches. Finally, it can be useful to see the matching parts between your seed image and the best match. To do so, run drawMatches.
+1. **processImages**
+2. **scanDatabase**
+3. **drawMatches**
 
-The method:
+### SETTING UP ARCH-V ###
 
-* processImages
-* scanDatabase
-* drawMatches
+In order to compile and run this project you will need to install the OpenCV library.
 
+***Note:*** click [here](https://bitbucket.org/digitalscholarship/documentation/src/0d45e95a99e6aa490a4c6c659f7182390b3ee41a?at=master) to download the documentation for setting up arch-v on **macOS**.
 
-### SETTING IT UP###
+***Installing OpenCV***
 
-In order to compile and run this project you will need to install the OpenCV library.  
+For OpenCV, you need several dependencies: gcc, g++, cmake and several video and image libraries specified on their site. For Linux, use these links to install OpenCV:
 
-***Installing OpenCV
-***
+* [Introduction to OpenCV](http://docs.opencv.org/2.4/doc/tutorials/introduction/table_of_content_introduction/table_of_content_introduction.html)
+* [Installation on Linux](http://docs.opencv.org/2.4/doc/tutorials/introduction/linux_install/linux_install.html#linux-installation)
+* [Ubuntu Documentation: OpenCV](https://help.ubuntu.com/community/OpenCV)
 
-For OpenCV you need several dependencies; gcc, g++, cmake and several video and image libraries specified on their site.
+Provided is a simplified version of the process for building OpenCV on Unix based systems:
 
-
-These are a couple useful links for installing OpenCV:
-
-* http://docs.opencv.org/doc/tutorials/introduction/table_of_content_introduction/table_of_content_introduction.html
-* https://help.ubuntu.com/community/OpenCV
-
-Provided is a simplified version of the process for building OpenCV on Unix based systems: 
-
-* Download all dependencies required for OpenCV 
+* Download all of the dependices required for OpenCV
 * Download the zipped OpenCV file from their website
-* Unzip OpenCV
-* Go to directory and build using cmake 
-* Set up user system to correctly link to OpenCV library
-* Check that library is linked correctly by testing some of the OpenCV sample programs
+* Unzip the OpenCV file
+* Go into the unzipped OpenCV directory and built using cmake
+* Set up the configurations to link the OpenCV library
+* Verify that the library has been linked correctly by following this tutorial to [Load and Display an Image](http://docs.opencv.org/2.4/doc/tutorials/introduction/display_image/display_image.html#display-image)
 
 ***Compiling Arch-v***
 
-Once OpenCV is installed and the libraries are included, go to the ArchV directory and run make all. You should be left with a .exe version of each program; processImages.exe, scanDatabase.exe, and drawMatches.exe.
+Once OpenCV is installed and the libraries are included, go to your arch-v directory and run `make all`. You should be left with an executable (.exe) version of each program: processImages.exe, scanDatabase.exe, and drawMatches.exe.
 
-
-
-
-
-
+***Note:*** all image files should be `.jpg` and click [here](http://benjaminpauley.net/BL-Flickr.tar.gz) if you wish to download the  same imageset that this documentation will be using.
 
 ### PROCESS IMAGES ###
 
-processImages when executed reads in a parameter file (for SURF), an input directory that contains the images to be processed, and an output directory to put the YAML files containing the discovered keypoints and their descriptors. 
+**processImages** reads in a parameter file (for SURF), an input directory that contains the images to be processed, and an output directory to put the YAML files containing their discovered keypoints and their descriptors. 
 
 ***Using processImages***
 
-./process.exe -i <input directory> -o <output directory> -p <path to parameter file>
+When running processImages, the `<path to input directory>` is the imageset that you are trying to process. The output directory, which is where the `.yml` files will be stored, must already exist. This program is the most computationally intensive component of arch-v and should take several minutes to complete.
 
-When executes it should immediately start processing the files one by one and outputting the information to the terminal. This is the most computationally intensive part of Arch-v and should take several minutes to complete. For each image that was found in the directory it will output the number of keypoints found and then the remaining keypoints after they have been filtered. It will also output the image number it is on for every hundred images it processes, i.e. image 0, 100, 200 ... to the last one.
-![runprocess.png](https://bitbucket.org/repo/7RRn64/images/1614076537-runprocess.png)
+	$ ./processImages.exe -i <path to input directory> -o <path to output directory> -p <path to SURF parameter file>
 
-When done, you should see within the output directory a unique.yml file for each image that was in the input directory.
-![outputprocess.png](https://bitbucket.org/repo/7RRn64/images/562201705-outputprocess.png)
+... 
 
-Within each file there are all the keypoints and descriptors. The first part of the file is the keypoints, and then after that matrix there is a matrix of all of the descriptors for those keypoints. These files will then be read in for the homography matching part of ArchV. The files should look like this if any keypoints were found.
-![ymlcontents.png](https://bitbucket.org/repo/7RRn64/images/3957141334-ymlcontents.png)
+	$ ./processImages.exe -i imageset/ -o keypoints/ -p param
+	Processed all 1067 images, and placed the .yml files in keypoints/
+	$ 
+
+Taking a look at the input and output directories, each image has a corresponding `.yml` file.
+
+	$ ls imageset/
+	10998090545_ba532dc156_o.jpg	10998857066_8e73d5d435_o.jpg	10999455433_17a0db32b6_o.jpg
+   	10998095795_483363ebc7_o.jpg	10998859196_b863e10978_o.jpg	10999456085_90141fcbdf_o.jpg
+   	10998096905_60b65e863b_o.jpg	10998859965_2b6ea731f5_o.jpg	10999459045_abb11c05ca_o.jpg
+   	10998100245_835ea9f601_o.jpg	10998864205_8b3b560385_o.jpg	10999459103_ff81e309b1_o.jpg
+   	10998121025_708152d1b0_o.jpg	10998865296_cb00afbbac_o.jpg	10999463225_ee672db6f5_o.jpg
+   	...
+   	10998975233_1ba7fd59cc_o.jpg	10999363305_db9784db93_o.jpg	10999654263_bf18a3a94f_o.jpg
+   	$ 
+
+...
+
+	$ ls keypoints/
+	10998090545_ba532dc156_o.yml	10998857066_8e73d5d435_o.yml	10999455433_17a0db32b6_o.yml
+	10998095795_483363ebc7_o.yml	10998859196_b863e10978_o.yml	10999456085_90141fcbdf_o.yml
+	10998096905_60b65e863b_o.yml	10998859965_2b6ea731f5_o.yml	10999459045_abb11c05ca_o.yml
+	10998100245_835ea9f601_o.yml	10998864205_8b3b560385_o.yml	10999459103_ff81e309b1_o.yml
+	10998121025_708152d1b0_o.yml	10998865296_cb00afbbac_o.yml	10999463225_ee672db6f5_o.yml
+	...
+	10998975233_1ba7fd59cc_o.yml	10999363305_db9784db93_o.yml	10999654263_bf18a3a94f_o.yml
+	$ 
+
+These files will then be read in for the homography matching component of arch-v. Looking at the first `.yml` file, the first matrix contains the keypoints and the second matrix contains the descriptors for the keypoints:
+
+	$ cat 11000210893_335dee8657_o.yml
+	%YAML:1.0
+	keypoints: [ 3.2808068847656250e+02, 4.8052941894531250e+02, 56.,
+		1.5546127319335938e+02, 2.0784480468750000e+04, 1, 1,
+		3.2770791625976562e+02, 4.7961071777343750e+02, 62.,
+		1.5044647216796875e+02, 1.7364101562500000e+04, 2, 1,
+		7.3369165039062500e+02, 3.8075772094726562e+02, 58.,
+		3.4650259399414062e+02, 1.7311123046875000e+04, 1, 1,
+		...
+		2.8078506469726562e+02, 5.0304754638671875e+02, 2, 1 ]
+	descriptors: !!opencv-matrix
+		rows: 503
+		cols: 64
+		dt: f
+		data: [ 1.21101424e-04, -7.75693916e-03, 6.75657764e-03,
+			9.65651684e-03, 2.51447931e-02, -2.49528252e-02, 2.57605817e-02,
+			2.52846610e-02, 1.91994593e-04, 5.52531055e-05, 6.01771404e-04,
+			4.99580929e-04, -5.58408658e-07, 6.68875509e-05, 1.16100106e-04,
+			8.46642070e-05, -5.39382035e-03, -2.57135532e-03, 1.99829433e-02,
+			5.59122600e-02, 8.40003043e-02, -2.42966130e-01, 3.75171691e-01,
+			...
+			1.17994336e-04, 1.03991253e-04 ]
+	$ 
+
 
 After this step has been completed, you can run the second program to find matches for your seed image within the image set.
 
-
 ### SCAN DATABASE ###
 
-ScanDatabase takes in a seed image, the directory of keypoints, the parameter file that generated those keypoints, and the path to an output image file that will contain the best matching images. This program reads in your seed image, extracts keypoints, generates descriptors for these keypoints and compares those descriptors with the descriptors of the images from the database. Each comparison (image vs database image) is done using a robust filter, that checks for sensitivity, symmetry, as well as geometric proximity of the matches. Images are then ranked based on the number of matches they have with the input image. The top three hits are then displayed with the number of matches they contained.There will be two output files: output.jpg and output.txt.
+**scanDatabase** reads in a seed image, the directory of `.yml` files, a filepath to an output image, and the path to the SURF parameter file.
+
+The program reads in your seed image, extracts the keypoints and descriptors like processImages had, and compares that information with the keypoints and descriptors from every `.yml` file; this is essentially comparing the seed image against every image in the imageset. Each comparison is done using a robust filter, that checks for sensitivity, symmetry, as well as geometric proximity of the matches. Images are then ranked based on the number of matches they have with the seed image. The top three matches are then displayed with the number of matches they contained. There will be two output files: `output.jpg` and `output.txt`.
 
 ***Using scanDatabase***
 
-./ScanImageDatabase.exe -i <path to seed image> -d <path to image directory> -k <path to keypoint directory> -o <path to output image file (ending with .jpg!)> -p <path to SURF parameter file> 
 
-![runscanDB.png](https://bitbucket.org/repo/7RRn64/images/3847713031-runscanDB.png)
+	$ ./scanDatabase.exe -i <path to seed image> -d <path to input directory> -k <path to keypoints directory> -o <path to output files> -p <path to SURF parameter file>
 
-When the program is finished it will have saved the results in the specified output image file (<output>.jpg) and text file (<output.txt>). The output.jpg file should look something like this:
-![output.jpg](https://bitbucket.org/repo/7RRn64/images/4210851335-output.jpg)
-The seed image is in the top left, the best match in the top right, then second best match bottom left and so on. The filename and distance are included on top of each subsection. The distance refers to the remaining number of matches.
+While scanDatabase is running, it will print its progress for every hundred images that it has processed.
 
-An output that extends how many images to display based on their ranking should look something like this:
-![Scan_image2.jpg](https://bitbucket.org/repo/7RRn64/images/1670594404-Scan_image2.jpg)
+	$ ./scanDatabase.exe -i imageset/11000210893_335dee8657_o.jpg -d imageset/ -k keypoints/ -o output.jpg -p param
+	Processing image # 100 out of 1067 images in the database
+	Processing image # 200 out of 1067 images in the database
+	Processing image # 300 out of 1067 images in the database
+	Processing image # 400 out of 1067 images in the database
+	...
+	Processing image # 1067 out of 1067 images in the database
+	$ 
 
-The output.txt file should look like this:
-![output.txt.png](https://bitbucket.org/repo/7RRn64/images/2210241640-output.txt.png)
+When the program finishes, it will have saved the output image and text file with the names that you had specified `<path to output files>`. The output image should look similar to the following image:
 
-Each image in the image set has a value next to it, that value is the number of remaining matches after the homography filter. Notice that there are more than three images that have matches. There can be more matches than three, the output.jpg is simply a preview of the best 3 matches, not all possible matches.
- 
+[output.jpg]
+
+The seed image is in the top left, the best match is immediately to the right (being the seed image itself), the second best is the first image in the second row, and so on. The filename and distance are included on top of each image. The distance refers to the remaining number of matches.
+
+The output text file should look similar to the following:
+
+	$ cat output.txt
+	Input Image: imageset/11000210893_335dee8657_o
+	
+	Images scanned and number of significant matches: 
+	Image: 11000210893_335dee8657_o dist = 503
+	Image: 11000152114_551839b72c_o dist = 38
+	Image: 11000155224_4b2e9bfd44_o dist = 32
+	Image: 10998440236_75d21eaf89_o dist = 17
+	Image: 10998618994_0ed3a60fe5_o dist = 7
+	...
+	Image: 11046638724_d2ef9b484f_o dist = 0
+	$ 
+
+Each image in the imageset has a corresponding value, indicating the number of remaining matches after the homography filter. Notice that there are more than three images that have matches. While the output image is simply a preview of the three best matches, there can be more than three matches; it does not display ***all the possible matches*** described in the output text file.
+
 ### DRAW MATCHES ###
 
-drawMatches takes as input two images, the path to an output image file as well as the path to the parameter file. It is best to use similar parameters to what was used in the first two steps to find these two images that are known to be similar. The code is also self contained so you can input any two images and any SURF parameter files to find the keypoints that match and have passed the robust homography filter.
+**drawMatches** takes as input two images, the path to an output image file as well as the path to the parameter file. It is best to use similar parameters to what was used in the first two steps to find these two images that are known to be similar. The code is also self contained so you can input any two images and any SURF parameter files to find the keypoints that match and have passed the robust homography filter.
 
 ***Using drawMatches***
 
-./drawMatches.exe -i1 <path to seed image> -i2 <path to image to compare with> -o <path to output image file (ending with .jpg!)> -p <path to SURF parameter file> 
-![runmatch.png](https://bitbucket.org/repo/7RRn64/images/2110534124-runmatch.png)
+	$ ./drawMatches.exe -i1 <path to seed image> -i2 <path to image for comparison> -o <path to output image> -p <path to SURF parameter file>
 
-When finished you should have an output image file like this:
-![match.jpg](https://bitbucket.org/repo/7RRn64/images/4033922299-match.jpg)
+The following execution of drawMatches is between the seed image that we've been using throughout this documentation and its best match.
 
-An output file with richer keypoint drawings will look like this:
-![keypoints.jpg](https://bitbucket.org/repo/7RRn64/images/2314584649-keypoints.jpg)
+	$ ./drawMatches.exe -i1 imageset/11000210893_335dee8657_o.jpg -i2 imageset/11000152114_551839b72c_o.jpg -o match.jpg -p param
+	Number of keypoints 1 : 3735 After filter : 503
+	Number of keypoints 2 : 3518 After filter : 454
+	number of remaining matches after homography: 38
+	$ 
 
-The red circles are the keypoints with radius equal to their size, the blue lines draw the matching keypoint on the other image.
+When the program finishes, it will have saved the output image and text file with the names that you had specified `<path to output image>`. The output image should look similar to the following image:
+
+[match.jpg]
+
+The red circles are the keypoints with their radii equal their size and the blues lines connect the matching keypoints between the two images.
 
 ### PARAMETER FILE ###
-The parameter file should be a simple text file formatted in this way:
-minHessian: <value>
-octaves: <value>
-octaveLayers: <value>
-min Size: <value>
-min Response: <value>
 
-example:
+The parameter file should be a `.txt` file that follows this format:
 
-![param.png](https://bitbucket.org/repo/7RRn64/images/2572617515-param.png)
+	$ cat param
+	minHessian: 500
+	octaves:  4
+	octaveLayers: 4
+	min Size: 50
+	min Response: 100
+	$ 
 
-### CONTACT ###
+#### CONTACT ####
 
-developed by Carl Stahmer and Arthur Koehl at the Data Science Initiative of University of California Davis
-
-Carl Stahmer: http://www.carlstahmer.com 
-
-Arthur Koehl: avkoehl@ucdavis.edu
+Developed by [Carl Stahmer](http://www.carlstahmer.com) and [Arthur Koehl](avkoehl@ucdavis.edu) at the Data Science Initiative of the University of California Davis. Documentation authored by [Henry Le](hutle@ucdavis.edu).
