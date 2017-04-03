@@ -25,7 +25,7 @@ using namespace std;
 using namespace cv;
 
 int usage ();
-void read_flags (int argc, char **argv, string *input, string *output, string *param);
+void read_flags (int argc, char **argv, string *input, string *output, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
 void read_surfparams (string param, int *min, int *octaves, int *layers, int *sizemin, double *responsemin);
 void filter_keypoints (vector <KeyPoint> &keypoints, int sizemin, double responsemin);
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   int sizemin = 50;
   double responsemin = 100;
   string input, output;
-  string param;
+  string param = "";
   vector <KeyPoint> keypoints;
   Mat image;
   Mat outimage; 
@@ -57,8 +57,9 @@ int main(int argc, char **argv)
 /* =====================================================================================
 	parse command line into variables above and read in the image into Mat image
    ===================================================================================== */
-  read_flags(argc, argv, &input, &output, &param);
-  read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
+  read_flags(argc, argv, &input, &output, &param, &minh, &octaves, &layers, &sizemin, &responsemin);
+  if (param != "")
+    read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
   image = imread (input);
 
 /* =====================================================================================
@@ -82,10 +83,12 @@ int main(int argc, char **argv)
 int usage ()
 {
   cout << "./a.out -i input -o output -p paramfilepath " << endl;
+  cout << "otherwise, without param file:" << endl;
+  cout << "./a.out -i input -o output -h # -oct # -l # -s # -r #" << endl;
   return -1;
 }
 
-void read_flags(int argc, char **argv, string *input, string *output, string *param) 
+void read_flags (int argc, char **argv, string *input, string *output, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin)
 {
   string parser;
   for (int i = 0; i < argc; i++)
@@ -97,6 +100,17 @@ void read_flags(int argc, char **argv, string *input, string *output, string *pa
       *output = argv[i+1];
     if (parser == "-p")
       *param = argv[i+1];
+
+    if (parser == "-h")
+      *minh = atoi(argv[i+1]);
+    if (parser == "-oct")
+      *octaves = atoi(argv[i+1]);
+    if (parser == "-l")
+      *layers = atoi(argv[i+1]);
+    if (parser == "-s")
+      *sizemin = atoi(argv[i+1]);
+    if (parser == "-r")
+      *responsemin = atoi(argv[i+1]);
   }
 }
  
