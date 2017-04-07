@@ -1,5 +1,5 @@
 /* ============================================================================================
-  processImages.cpp                Version 2           10/15/2016                  Arthur Koehl
+  processImages.cpp                Version 3           04/07/2017                  Arthur Koehl
 
   This program reads in an input directory contianing a set of images, processes them, 
   computes features and descriptors and outputs them to YAML format files in output directory
@@ -22,7 +22,7 @@ using namespace std;
 using namespace cv;
 
 int usage ();
-void read_flags(int argc, char** argv, string *path2dir, string *path2outdir, string *param);
+void read_flags(int argc, char** argv, string *path2dir, string *path2outdir, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
 void read_surfparams (string param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
 int get_filelist (string path, vector <string> &allfiles);
 void filter_keypoints (vector <KeyPoint> &keypoints, int sizemin, double responsemin);
@@ -41,16 +41,18 @@ int main(int argc, char **argv)
 /* ===============================================================================================
    (1) Initialize all variables and surf parameters (2) parse command line (3) read in parameters
    =============================================================================================== */
-  string path2dir, path2outdir, param;
+  string path2dir, path2outdir;
+  string param = "";
   int minh = 2000, octaves = 5, layers = 5;
   int sizemin = 50;
   double responsemin = 100;
   string name, nameful;
   string extension = ".yml";
 
-  read_flags (argc, argv, &path2dir, &path2outdir, &param);
+  read_flags (argc, argv, &path2dir, &path2outdir, &param, &minh, &octaves, &layers, &sizemin, &responsemin);
 
-  read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
+  if (param != "")
+    read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
 
 /* ===============================================================================================
    Create all structures needed for SURF key point detection and feature extraction
@@ -105,7 +107,9 @@ int main(int argc, char **argv)
 
     //SURF detection and then filter
     detector.detect (image, keypoints);
+    //cout << "keypoints: " << keypoints.size();
     filter_keypoints (keypoints, sizemin, responsemin);
+    //cout << "  after filter: " << keypoints.size() << endl;
 
     //write into output file
     FileStorage fs (nameful, FileStorage::WRITE);
@@ -148,6 +152,9 @@ int usage()
     cout << "     " << "================================================================================================"  <<  endl;
     cout << "     " << "================================================================================================"  <<  endl;
     cout << "\n\n" <<endl;
+
+    cout << "otherwise if not using a parameter file:" << endl;
+    cout << "./a.out -i -o -h -oct -l -s -r" << endl;
 }
 
 
@@ -155,7 +162,7 @@ int usage()
 /* ===============================================================================================
    Procedure to parse the command line options for the program
    =============================================================================================== */
-void read_flags(int argc, char** argv, string *path2dir, string *path2outdir, string *param)
+void read_flags(int argc, char** argv, string *path2dir, string *path2outdir, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin)
 {
   string input;
   for(int i = 1; i < argc; i++)
@@ -167,6 +174,17 @@ void read_flags(int argc, char** argv, string *path2dir, string *path2outdir, st
       *path2outdir = argv[i + 1];
     if (input == "-p")
       *param = argv[i + 1];
+
+    if (input == "-h")
+      *minh = atoi(argv[i+1]);
+    if (input == "-oct")
+      *octaves = atoi(argv[i+1]);
+    if (input == "-l")
+      *layers = atoi(argv[i+1]);
+    if (input == "-s")
+      *sizemin = atoi(argv[i+1]);
+    if (input == "-r")
+      *responsemin = atoi(argv[i+1]);
   }
 }
 
