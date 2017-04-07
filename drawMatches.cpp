@@ -1,5 +1,5 @@
 /* ============================================================================================
-  drawMatches.cpp                Version 2             10/15/2016                  Arthur Koehl
+  drawMatches.cpp                Version 3             04/07/2017                  Arthur Koehl
 
   This program takes two images (generally ones that are known to be similar) processes them
   by finding their keypoints and descriptors for the keypoints. Then it finds the matching
@@ -30,7 +30,7 @@ using namespace cv;
 using namespace std;
 
 int usage();
-void read_flags (int argc, char** argv, string *imgfile1, string *imgfile2, string *output, string *param);
+void read_flags (int argc, char** argv, string *imgfile1, string *imgfile2, string *output, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
 void read_surfparams(string param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
 
 int ratioTest(vector<vector<cv::DMatch> > &matches, double ratio);
@@ -56,7 +56,8 @@ int main(int argc, char** argv)
 /* ===============================================================================================
     (1) Initialize all variables and surf parameters (2) parse command line (3) read in parameters 
    =============================================================================================== */
-  string imgfile1, imgfile2, output, param;
+  string imgfile1, imgfile2, output;
+  string param = "";
 
   int minh= 2000 ;
   int octaves = 8;
@@ -66,9 +67,10 @@ int main(int argc, char** argv)
   double scale = 1;
   double ratio = 0.8;
 
-  read_flags (argc, argv, &imgfile1, &imgfile2, &output, &param);
+  read_flags (argc, argv, &imgfile1, &imgfile2, &output, &param, &minh, &octaves, &layers, &sizemin, &responsemin);
 
-  read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
+  if (param != "")
+    read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
 
 /* ===============================================================================================
    Create all structures that are needed to process the images:
@@ -217,6 +219,9 @@ int usage()
     cout << "     " << "================================================================================================"  <<  endl;
     cout << "\n\n" <<endl;
 
+    cout << "without param file: " << endl;
+    cout << "./a.out -i1 -i2 -o -h -oct -l -s -r" << endl;
+
   return -1;
 }
 
@@ -225,7 +230,7 @@ int usage()
 /* ===============================================================================================
    Procedure to read in flag values
    =============================================================================================== */
-void read_flags (int argc, char** argv, string *imgfile1, string *imgfile2, string *output, string *param)
+void read_flags (int argc, char** argv, string *imgfile1, string *imgfile2, string *output, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin)
 {
   string input;
   for(int i = 1; i < argc; i++)
@@ -239,6 +244,17 @@ void read_flags (int argc, char** argv, string *imgfile1, string *imgfile2, stri
       *output = argv[i + 1];
     if (input == "-p") 
       *param = argv[i + 1];
+
+    if (input == "-h")
+      *minh = atoi(argv[i+1]);
+    if (input == "-oct")
+      *octaves = atoi(argv[i+1]);
+    if (input == "-l")
+      *layers = atoi(argv[i+1]);
+    if (input == "-s")
+      *sizemin = atoi(argv[i+1]);
+    if (input == "-r")
+      *responsemin = atoi(argv[i+1]);
   }
 }
 

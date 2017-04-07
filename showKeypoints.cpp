@@ -1,5 +1,5 @@
 /* ============================================================================================
-  showKeypoints.cpp                Version 2           10/15/2016                  Arthur Koehl
+  showKeypoints.cpp                Version 3           04/07/2017                  Arthur Koehl
 
 	this program:
 		[1] reads in parameters for surf detection, input image and output image from command line
