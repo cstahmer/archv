@@ -1,5 +1,5 @@
 /* ===============================================================================================
-   scanDatabase.cpp		          	Version 2               10/16/2016               		Arthur Koehl
+   scanDatabase.cpp		          	Version 3               04/07/2017               		Arthur Koehl
 
    This program reads in an image file, the directory of images to compare it with, the keypoint
    files of those image (the directory), an output image file, as well as the parameters that 
@@ -31,7 +31,7 @@ using namespace std;
 
 
 int  usage();
-void read_flags(int argc, char** argv, string *imgfile, string *imgdir, string *infodir, string *output, string *param);
+void read_flags(int argc, char** argv, string *imgfile, string *imgdir, string *infodir, string *output, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
 void read_surfparams(string param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin);
 int GetFileList(string directory, vector<string> &files);
 
@@ -63,7 +63,8 @@ int main(int argc, char** argv)
 /* ===============================================================================================
    (1) Initialize all varaibles and surf parameters (2) parse command line (3) read in parameters 
    =============================================================================================== */
-  string imgfile, imgdir, infodir, output, param;
+  string imgfile, imgdir, infodir, output;
+  string param = "";
   int minh = 2000;
   int octaves = 8;
   int layers = 8;
@@ -72,9 +73,12 @@ int main(int argc, char** argv)
   double scale = 1;
   double ratio = 0.8;
 
-  read_flags (argc, argv, &imgfile, &imgdir, &infodir, &output, &param);
+  read_flags (argc, argv, &imgfile, &imgdir, &infodir, &output, &param, &minh, &octaves, &layers, &sizemin, &responsemin);
 
-  read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
+  if (param != "")
+    read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
+
+  cout << "SURF params: " << param << " " << minh << " " << octaves << " " << layers << " " << sizemin << " " << responsemin << endl;
 
 /* ===============================================================================================
    Create all structures that are needed to process the images:
@@ -353,13 +357,16 @@ int usage()
     cout << "     " << "================================================================================================"  << endl;
     cout << "\n\n" <<endl;
 
+    cout << "otherwise: " << endl;
+    cout << "./a.out -i -d -k -o -h -oct -l -s -r" << endl;
+
   return -1;
 }
 
 /* ===============================================================================================
    Procedure to read in flag values
    =============================================================================================== */
-void read_flags(int argc, char** argv, string *imgfile, string *imgdir, string *infodir, string *output, string *param)
+void read_flags(int argc, char** argv, string *imgfile, string *imgdir, string *infodir, string *output, string *param, int *minh, int *octaves, int *layers, int *sizemin, double *responsemin)
 {
   string input;
   for(int i = 1; i < argc; i++)
@@ -375,6 +382,17 @@ void read_flags(int argc, char** argv, string *imgfile, string *imgdir, string *
       *output = argv[i + 1];
     if (input == "-p") 
       *param = argv[i + 1];
+
+    if (input == "-h")
+      *minh = atoi(argv[i+1]);
+    if (input == "-oct")
+      *octaves = atoi(argv[i+1]);
+    if (input == "-l")
+      *layers = atoi(argv[i+1]);
+    if (input == "-s")
+      *sizemin = atoi(argv[i+1]);
+    if (input == "-r")
+      *responsemin = atoi(argv[i+1]);
   }
 }
 
