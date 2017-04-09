@@ -236,76 +236,21 @@ int main(int argc, char** argv)
     indices = ordered(distval,ndist);
 
 /* ===============================================================================================
-   Recover the top three images
-   =============================================================================================== */
-   int nimg = 4;
-   int nimgmax = 10;
-
-   Mat image;
-   Mat drawImg[10];
-   Mat scaledImg[10];
-
-   string imfile;
-   string titles[10];
-   stringstream str[10];
-
-   img1.copyTo(drawImg[0]);
-   str[0] << "Input Image: " << imgfile.substr(0,imgfile.find_last_of(".")) ;
-   getline(str[0],titles[0]);
-
-   int idx;
-   double dist;
-   for(int i=0; i < 3; i++)
-   {
-
-	  idx = indices[i];
-	  dist = distval[idx];
-
-	  imfile = files[idx];
-	  filename = imgdir;
-	  if(*filename.rbegin() != '/') filename.append("/");
-	  filename.append(imfile);
-	  image=imread(filename.c_str());
-	  image.copyTo(drawImg[i+1]);
-
- 	  str[i+1] << "Image: " << files[idx].substr(0,files[idx].find_last_of(".")) << " dist = " << dist;
- 	  getline(str[i+1],titles[i+1]);
-   }
-
-
-/* ===============================================================================================
-   Now combine all images into a single, large one
-   =============================================================================================== */
-  int interpolation=INTER_LINEAR;
-  resize(drawImg[0],scaledImg[0], Size(),scale,scale,interpolation);
-  resize(drawImg[1],scaledImg[1], Size(),scale,scale,interpolation);
-  resize(drawImg[2],scaledImg[2], Size(),scale,scale,interpolation);
-  resize(drawImg[3],scaledImg[3], Size(),scale,scale,interpolation);
-
-  Mat CombinedImage = CombineImages(nimg,scaledImg,titles);
-
-/* ===============================================================================================
    Write out ordered list of images, with number of matches
    =============================================================================================== */
-  string distfile=output;
   string jsonfile = output;
-  pos = 0;
-  pos = distfile.find("jpg",pos);
-  jsonfile.replace(pos,3,"json");
-  distfile.replace(pos,3,"txt");
-  ofstream outfile(distfile.c_str());
-  outfile << "Input Image: " << imgfile.substr(0,imgfile.find_last_of(".")) << endl ;
+
   ofstream json(jsonfile.c_str());
-  outfile << "\nImages scanned and number of significant matches: " << endl;
   json << "{\"path\":\"" << imgdir << "\"";
   json << ", \"files\":[";
   int count = 0;
+  int idx;
+  double dist;
 
   for(int i=0; i < ndist; i++)
   {
 	  idx = indices[i];
 	  dist = distval[idx];
-   	outfile << "Image: " << files[idx].substr(0,files[idx].find_last_of(".")) << " dist = " << dist << endl;
     if (dist > 1)
     {
       if (count != 0)
@@ -315,14 +260,8 @@ int main(int argc, char** argv)
       count++;
     }
   }
-  outfile.close();
   json << "]}" << endl;
   json.close();
-
-/* ===============================================================================================
-   Save image of all the top matches into a window
-   =============================================================================================== */
-  imwrite( output, CombinedImage );
 
   return 0;
 }
