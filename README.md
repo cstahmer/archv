@@ -113,14 +113,14 @@ After this step has been completed, you can run the second program to find match
 
 ### SCAN DATABASE ###
 
-**scanDatabase** reads in a seed image, the directory of `.yml` files, a filepath to an output image, and the path to the SURF parameter file.
+**scanDatabase** reads in a seed image, the directory of `.yml` files, a filepath to an output json (text) file, and the path to the SURF parameter file.
 
 The program reads in your seed image, extracts the keypoints and descriptors like processImages had, and compares that information with the keypoints and descriptors from every `.yml` file; this is essentially comparing the seed image against every image in the imageset. Each comparison is done using a robust filter, that checks for sensitivity, symmetry, as well as geometric proximity of the matches. Images are then ranked based on the number of matches they have with the seed image. The top three matches are then displayed with the number of matches they contained. There will be two output files: `output.jpg` and `output.txt`.
 
 ***Using scanDatabase***
 
 
-	$ ./scanDatabase.exe -i <path to seed image> -d <path to input directory> -k <path to keypoints directory> -o <path to output files> -p <path to SURF parameter file>
+	$ ./scanDatabase.exe -i <path to seed image> -d <path to input directory> -k <path to keypoints directory> -o <path to output file> -p <path to SURF parameter file>
 
 While scanDatabase is running, it will print its progress for every hundred images that it has processed.
 
@@ -133,27 +133,10 @@ While scanDatabase is running, it will print its progress for every hundred imag
 	Processing image # 1067 out of 1067 images in the database
 	$ 
 
-When the program finishes, it will have saved the output image and text file with the names that you had specified `<path to output files>`. The output image should look similar to the following image:
+When the program finishes, it will have saved the output in json from to the text file with the names that you had specified `<path to output file>`. Combining the top hits should look similar to the following image:
 
 ![output.jpg](https://bitbucket.org/repo/7RRn64/images/3554904158-output.jpg)
 The seed image is in the top left, the best match is immediately to the right (being the seed image itself), the second best is the first image in the second row, and so on. The filename and distance are included on top of each image. The distance refers to the remaining number of matches.
-
-The output text file should look similar to the following:
-
-	$ cat output.txt
-	Input Image: imageset/11000210893_335dee8657_o
-	
-	Images scanned and number of significant matches: 
-	Image: 11000210893_335dee8657_o dist = 503
-	Image: 11000152114_551839b72c_o dist = 38
-	Image: 11000155224_4b2e9bfd44_o dist = 32
-	Image: 10998440236_75d21eaf89_o dist = 17
-	Image: 10998618994_0ed3a60fe5_o dist = 7
-	...
-	Image: 11046638724_d2ef9b484f_o dist = 0
-	$ 
-
-Each image in the imageset has a corresponding value, indicating the number of remaining matches after the homography filter. Notice that there are more than three images that have matches. While the output image is simply a preview of the three best matches, there can be more than three matches; it does not display ***all the possible matches*** described in the output text file.
 
 ### DRAW MATCHES ###
 
