@@ -1,5 +1,5 @@
-minHessian: 500
-octaves:  4
-octaveLayers: 4
+minHessian: 2000
+octaves: 5
+octaveLayers: 5
 min Size: 50
-min Response: 100
+min Response: 50
