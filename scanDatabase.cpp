@@ -78,8 +78,6 @@ int main(int argc, char** argv)
   if (param != "")
     read_surfparams (param, &minh, &octaves, &layers, &sizemin, &responsemin);
 
-  cout << "SURF params: " << param << " " << minh << " " << octaves << " " << layers << " " << sizemin << " " << responsemin << endl;
-
 /* ===============================================================================================
    Create all structures that are needed to process the images:
         - use SURF for key points detection and feature extraction
