@@ -1,0 +1,8 @@
+# Compiled #
+*.exe
+*.o
+
+# Results #
+*.jpg
+*.json
+*.txt
