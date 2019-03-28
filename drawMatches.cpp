@@ -1,10 +1,45 @@
 /* ============================================================================================
-  drawMatches.cpp                Version 3             04/07/2017                  Arthur Koehl
+  drawMatches.cpp                Version 3             Last Update: 03/28/2019                
 
   This program takes two images (generally ones that are known to be similar) processes them
   by finding their keypoints and descriptors for the keypoints. Then it finds the matching
   keypoints and filters them using homography (ratio test, symmetry test, ransac test).
   Lastly it draws the keypoints and a line connecting its matching one in the other image.
+  
+  	This file is part of the Arch-V Platform -- https://github.com/cstahmer/archv
+
+	Copyright 2012 by Carl G. Stahmer -- http://www.carlstahmer.com
+	
+	Arch-V was originally created by Carl G. Stahmer through the generous support of 
+	the National Endowment for the Humanities.  Subsequent development was performed 
+	by Carl G. Stahmer (http://www.carlstahmer.com) and Arthur Koehl (avkoehl@ucdavis.edu) 
+	at the Digital Scholars Lab at the the University of California Davis, Univeristy 
+	Library (http://ds.lib.ucdavis.edu/). Documentation authored by Henry Le 
+	(hutle@ucdavis.edu).
+
+	Arch-V is licensed under a Creative Commons Attribution 4.0 International
+	License (https://creativecommons.org/licenses/by/4.0/legalcode).
+
+	You are FREE to SHARE (copy and redistribute the material in any medium or format) 
+	and ADAPT (remix, transform, and build upon the material for any purpose, even 
+	commercially) WITH THE FOLLOWING RESTRICTIONS:
+
+	1. 	You must credit Carl G. Stahmer (http://www.carlstahmer.com) and Arthur Koehl 
+		(avkoehl@ucdavis.edu) as the original developers of this software.
+		
+	2. 	You must credit the National Endowment for the Humanities and Univeristy of 
+		California, Davis Univeristy Library as having supported the original development 
+		of the software.
+		
+	3. 	You must provide a copyright notice.
+	
+	4. 	You must provide a link to the license 
+		(https://creativecommons.org/licenses/by/4.0/legalcode).
+		
+	5. 	You must indicate if and what changes you made to the software.
+	
+	6. 	You must provide a link to the original software at
+		https://github.com/cstahmer/archv](https://github.com/cstahmer/archv
 
  ============================================================================================ */
 
